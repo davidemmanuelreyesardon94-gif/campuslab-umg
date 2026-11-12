@@ -1,0 +1,24 @@
+apiVersion: v1
+kind: Service
+metadata:
+  name: campuslab-mysql-svc
+spec:
+  selector:
+    app: campuslab-mysql
+  ports:
+    - protocol: TCP
+      port: 3306
+      targetPort: 3306
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: campuslab-web-svc
+spec:
+  type: LoadBalancer
+  selector:
+    app: campuslab-web
+  ports:
+    - protocol: TCP
+      port: 8080
+      targetPort: 8080

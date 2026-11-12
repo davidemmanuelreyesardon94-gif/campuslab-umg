@@ -1,0 +1,55 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: campuslab-mysql
+spec:
+  selector:
+    matchLabels:
+      app: campuslab-mysql
+  template:
+    metadata:
+      labels:
+        app: campuslab-mysql
+    spec:
+      containers:
+      - name: mysql
+        image: mysql:8.0
+        env:
+        - name: MYSQL_ROOT_PASSWORD
+          value: "rootpassword"
+        - name: MYSQL_DATABASE
+          value: "campuslab"
+        ports:
+        - containerPort: 3306
+---
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: campuslab-web
+spec:
+  replicas: 2
+  selector:
+    matchLabels:
+      app: campuslab-web
+  template:
+    metadata:
+      labels:
+        app: campuslab-web
+    spec:
+      containers:
+      - name: tomcat-app
+        image: campuslab-web:latest
+        imagePullPolicy: IfNotPresent
+        env:
+        - name: DB_HOST
+          value: "campuslab-mysql-svc"
+        - name: DB_PORT
+          value: "3306"
+        - name: DB_NAME
+          value: "campuslab"
+        - name: DB_USER
+          value: "root"
+        - name: DB_PASS
+          value: "rootpassword"
+        ports:
+        - containerPort: 8080
